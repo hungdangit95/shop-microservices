@@ -19,16 +19,16 @@ namespace Product.API.Extensions
             app.UseRouting();
             //app.UseHttpsRedirection();
 
-           // app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-                {
-                    Predicate = _ => true,
-                   // ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapDefaultControllerRoute();
-            });
+            // app.UseAuthorization();
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+            //    {
+            //        Predicate = _ => true,
+            //       // ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            //    });
+            //    endpoints.MapDefaultControllerRoute();
+            //});
         }
     }
 }
