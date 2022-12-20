@@ -31,7 +31,6 @@ try
     Log.Information($"Start build Pipeline in Program file");
     app.UseInfrastructure();
     app.MapControllers();
-    app.Run();
 
     app.MigrateDatabase<ProductContext>((context, _) =>
     {

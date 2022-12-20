@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Contracts.Common.Interfaces;
+using Infrastructure.Common;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Product.API.Persistence;
@@ -31,7 +33,7 @@ namespace Product.API.Extensions
             //services.ConfigureSwagger();
 
             services.ConfigureProductDbContext(configuration);
-            // services.AddInfrastructureService();
+             services.AddInfrastructureService();
             //services.AddAutoMapper(config => config.AddProfile(new MappingProfile()));
             //services.ConfigureAuthenticationHandler();
             // services.ConfigureAuthorization();
@@ -55,15 +57,15 @@ namespace Product.API.Extensions
             return services;
         }
 
-        //private static IServiceCollection AddInfrastructureService(this IServiceCollection services)
-        //{
-        //    services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBase<,,>));
-        //    services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-        //    services.AddScoped<IProductRepository, ProductRepository>();
+        private static IServiceCollection AddInfrastructureService(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBase<,,>));
+            services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+           // services.AddScoped<IProductRepository, ProductRepository>();
 
-        //    return services;
+            return services;
 
-        //}
+        }
 
         //private static void ConfigureHealthChecks(this IServiceCollection services)
         //{
