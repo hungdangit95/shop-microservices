@@ -79,15 +79,18 @@ services:
   #  volumes:
   #    - pgadmin_data:/root/.pgadmin
     
-  #portainer:
-  #  container_name: portainer
-  #  restart: always
-  #  ports:
-  #    - "8080:8000"
-  #    - "9000:9000"
-  #  volumes:
-  #    - /var/run/docker.sock:/var/run/docker.sock
-  #    - portainer_data:/data
+  portainer:
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8080:8000"
+      - "9000:9000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
   
   #elasticsearch:
   #  container_name: elasticsearch
@@ -109,3 +112,20 @@ services:
   #    - elasticsearch
   #  ports:
   #    - "5601:5601"
+   #microservices api sections
+  product.api:
+      container_name: product.api
+      environment:
+         - ASPNETCORE_ENVIRONMENT=Development
+         - ASPNETCORE_URLS=http://+:80
+         - "ConnectionStrings:DefaultConnectionString=Server=productdb;Port=3306;Database=ProductDB;Uid=root;Pwd=Passw0rd!;"
+         - "ApiConfigurationSettings:ApiBaseUrl=http://product.api"
+         - "ApiConfigurationSettings:IdentityServerBaseUrl=http://localhost:6001"
+         - "ApiConfigurationSettings:IssuerUri=http://tedu.identity.api"
+         - "DatabaseSettings:DBProvider=mysql"
+         - "DatabaseSettings:ConnectionString=Server=productdb;Port=3306;Database=ProductDB;Uid=root;Pwd=Passw0rd!;"
+      depends_on: 
+         -  productdb
+      ports:
+         - "6002:80"
+      restart: always

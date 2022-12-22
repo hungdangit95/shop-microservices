@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Product.API.Persistence;
+using Product.API.Repositories;
+using Product.API.Repositories.Interfaces;
 
 namespace Product.API.Extensions
 {
@@ -33,8 +35,8 @@ namespace Product.API.Extensions
             //services.ConfigureSwagger();
 
             services.ConfigureProductDbContext(configuration);
-             services.AddInfrastructureService();
-            //services.AddAutoMapper(config => config.AddProfile(new MappingProfile()));
+            services.AddInfrastructureService();
+            services.AddAutoMapper(config => config.AddProfile(new MappingProfile()));
             //services.ConfigureAuthenticationHandler();
             // services.ConfigureAuthorization();
             //services.ConfigureHealthChecks();
@@ -61,7 +63,7 @@ namespace Product.API.Extensions
         {
             services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBase<,,>));
             services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-           // services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             return services;
 
