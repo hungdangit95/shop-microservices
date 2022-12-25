@@ -39,7 +39,7 @@ try
         endpoints.MapDefaultControllerRoute();
     });
 
-    //app.SeedCustomer().Run();
+   // app.SeedCustomer().Run();
     app.Run();
 }
 catch (Exception ex)

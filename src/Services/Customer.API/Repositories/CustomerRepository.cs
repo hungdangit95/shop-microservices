@@ -23,21 +23,21 @@ public class CustomerRepository : RepositoryQueryBase<Entities.Customer, int, Cu
     {
         return await GetByIdAsync(id);
     }
-    
-    // public async Task CreateCustomer(Entities.Customer customer)
-    // {
-    //     CreateAsync(customer);
-    // }
-    //
-    // public async Task UpdateCustomer(Entities.Customer customer)
-    // {
-    //     await UpdateAsync(customer);
-    // }
-    //
-    // public async Task DeleteCustomer(int id)
-    // {
-    //     var product = await GetByIdAsync(id);
-    //     if(product != null)
-    //         await DeleteAsync(product);
-    // }
+
+    //public async Task CreateCustomer(Entities.Customer customer)
+    //{
+    //    CreateAsync(customer);
+    //}
+
+    //public async Task UpdateCustomer(Entities.Customer customer)
+    //{
+    //    await UpdateAsync(customer);
+    //}
+
+    //public async Task DeleteCustomer(int id)
+    //{
+    //    var product = await GetByIdAsync(id);
+    //    if (product != null)
+    //        await DeleteAsync(product);
+    //}
 }

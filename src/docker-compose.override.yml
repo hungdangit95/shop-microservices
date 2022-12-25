@@ -44,13 +44,13 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   ##basketdb: redis
-  #basketdb:
-  #  container_name: basketdb
-  #  restart: always
-  #  ports:
-  #    - "6379:6379"
+  basketdb:
+    container_name: basketdb
+    restart: always
+    ports:
+      - "6379:6379"
   
-  ##inventorydb: mongo
+  ##inventorydb: mongo 
   #inventorydb:
   #  container_name: inventorydb
   #  restart: always
@@ -65,6 +65,7 @@ services:
   #  container_name: rabbitmq
   #  restart: always
   #  ports:
+
   #    - "5672:5672"
   #    - "15672:15672"
     
