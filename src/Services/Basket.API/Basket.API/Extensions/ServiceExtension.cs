@@ -15,17 +15,17 @@ public static class ServiceExtension
 {
     public static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
     {
-        var eventBusSettings = configuration.GetSection(nameof(EventBusSettings)).Get<EventBusSettings>();
-        services.AddSingleton(eventBusSettings);
+       // var eventBusSettings = configuration.GetSection(nameof(EventBusSettings)).Get<EventBusSettings>();
+        //services.AddSingleton(eventBusSettings);
 
         var cacheSettings = configuration.GetSection(nameof(CacheSettings)).Get<CacheSettings>();
         services.AddSingleton(cacheSettings);
 
-        var grpcSettings = configuration.GetSection(nameof(GrpcSettings)).Get<GrpcSettings>();
-        services.AddSingleton(grpcSettings);
+        //var grpcSettings = configuration.GetSection(nameof(GrpcSettings)).Get<GrpcSettings>();
+        //services.AddSingleton(grpcSettings);
 
-        var backgroundJobSettings = configuration.GetSection(nameof(BackgroundJobSettings)).Get<BackgroundJobSettings>();
-        services.AddSingleton(backgroundJobSettings);
+        //var backgroundJobSettings = configuration.GetSection(nameof(BackgroundJobSettings)).Get<BackgroundJobSettings>();
+        //services.AddSingleton(backgroundJobSettings);
 
         return services;
     }
