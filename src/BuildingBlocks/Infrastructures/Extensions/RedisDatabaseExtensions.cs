@@ -1,4 +1,7 @@
-﻿namespace Infrastructures.Extensions
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
+using StackExchange.Redis;
+namespace Infrastructures.Extensions
 {
     public static class RedisDatabaseExtensions
     {
@@ -79,7 +82,7 @@
             var data = JsonConvert.SerializeObject(obj);
             return await redis.StringSetAsync(key, data);
         }
-
+       
         public static async Task<bool> HSetAsync(this IDatabase redis, string key, string field, object obj)
         {
             var data = JsonConvert.SerializeObject(obj);

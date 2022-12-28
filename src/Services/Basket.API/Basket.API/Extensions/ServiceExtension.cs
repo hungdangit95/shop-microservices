@@ -3,11 +3,8 @@ using Infrastructure.Common;
 using Basket.API.Repositories;
 using Basket.API.Repositories.Interfaces;
 using Shared.Configurations;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Basket.API.Services;
-using Basket.API.Services.Interfaces;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Infrastructure.Extensions;
+using StackExchange.Redis;
 
 namespace Basket.API.Extensions;
 
@@ -15,7 +12,7 @@ public static class ServiceExtension
 {
     public static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
     {
-       // var eventBusSettings = configuration.GetSection(nameof(EventBusSettings)).Get<EventBusSettings>();
+        // var eventBusSettings = configuration.GetSection(nameof(EventBusSettings)).Get<EventBusSettings>();
         //services.AddSingleton(eventBusSettings);
 
         var cacheSettings = configuration.GetSection(nameof(CacheSettings)).Get<CacheSettings>();
@@ -34,24 +31,31 @@ public static class ServiceExtension
         services.AddScoped<IBasketRepository, BasketRepository>();
         services.AddTransient<ISerializeService, SerializeService>();
         //services.AddTransient<IEmailTemplateService, BasketEmailTemplateService>();
-       // services.AddTransient<LoggingDelegatingHandler>();
-       // services.ConfigureHealthChecks();
+        // services.AddTransient<LoggingDelegatingHandler>();
+        // services.ConfigureHealthChecks();
         return services;
     }
-    
+
     public static void ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
     {
         var settings = services.GetOptions<CacheSettings>("CacheSettings");
-        if(string.IsNullOrEmpty(settings.ConnectionStrings))
+        if (string.IsNullOrEmpty(settings.ConnectionStrings))
         {
             throw new ArgumentNullException("Redis Connection string is not configured.");
         }
-        
+
         //Redis Configuration
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = settings.ConnectionStrings;
-        });
+        //services.AddStackExchangeRedisCache(options =>
+        //{
+        //    options.Configuration = settings.ConnectionStrings;
+        //});
+
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+                ConnectionMultiplexer.Connect(new ConfigurationOptions
+                {
+                    EndPoints = { settings.ConnectionStrings },
+                    AbortOnConnectFail = false,
+                }));
     }
 
     //public static void ConfigureMassTransit(this IServiceCollection services)
@@ -74,7 +78,7 @@ public static class ServiceExtension
     //        config.AddRequestClient<IBasketCheckoutEvent>();
     //    });
     //}
-    
+
     //public static void ConfigureHttpClientService(this IServiceCollection services)
     //{
     //    services.AddHttpClient<BackgroundJobHttpService>()

@@ -1,10 +1,10 @@
-﻿using System.Reflection.Emit;
-using System.Text.Json;
-using Contracts.Common.Interfaces;
+﻿using Contracts.Common.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using Basket.API.Entities;
 using Basket.API.Repositories.Interfaces;
 using ILogger = Serilog.ILogger;
+using StackExchange.Redis;
+using Infrastructures.Extensions;
 //using Basket.API.Services;
 //using Basket.API.Services.Interfaces;
 //using Shared.Dtos.ScheduledJob;
@@ -14,16 +14,17 @@ namespace Basket.API.Repositories;
 
 public class BasketRepository : IBasketRepository
 {
-    private readonly IDistributedCache _redisCacheService;
-    private readonly ISerializeService _serializeService;
+    //private readonly IDistributedCache _redisCacheService;
+    private readonly IConnectionMultiplexer _connectionMultiplexer;
     private readonly ILogger _logger;
+    private readonly IDatabase _redisDb;
     //private readonly BackgroundJobHttpService _backgroundJobHttp;
     //private readonly IEmailTemplateService _emailTemplateService;
 
-    public BasketRepository(IDistributedCache redisCacheService, ISerializeService serializeService, ILogger logger)
+    public BasketRepository(ILogger logger, IConnectionMultiplexer connectionMultiplexer)
     {
-        _redisCacheService = redisCacheService;
-        _serializeService = serializeService;
+        _connectionMultiplexer = connectionMultiplexer;
+        _redisDb = _connectionMultiplexer.GetDatabase();
         _logger = logger;
         //_backgroundJobHttp = backgroundJobHttp;
         //_emailTemplateService = emailTemplateService;
@@ -32,10 +33,10 @@ public class BasketRepository : IBasketRepository
     public async Task<Cart?> GetBasketByUsername(string username)
     {
         _logger.Information($"BEGIN: GetBasketByUsername {username}");
-        var basket = await _redisCacheService.GetStringAsync(username);
+        var basket = await _redisDb.GetAsync<Cart>(username);
         _logger.Information($"END: GetBasketByUsername {username}");
 
-        return string.IsNullOrEmpty(basket) ? null : _serializeService.Deserialize<Cart>(basket);
+        return basket;
     }
 
     public async Task<Cart?> UpdateBasket(Cart cart, DistributedCacheEntryOptions options = null)
@@ -44,11 +45,13 @@ public class BasketRepository : IBasketRepository
         _logger.Information($"BEGIN: UpdateBasket for {cart.Username}");
         if (options != null)
         {
-            await _redisCacheService.SetStringAsync(cart.Username, _serializeService.Serialize(cart), options);
+            await _redisDb.JsonSetAsync(cart.Username, cart);
+            //  await _redisCacheService.SetStringAsync(cart.Username, _serializeService.Serialize(cart), options);
         }
         else
         {
-            await _redisCacheService.SetStringAsync(cart.Username, _serializeService.Serialize(cart));
+            await _redisDb.JsonSetAsync(cart.Username, cart);
+            //await _redisCacheService.SetStringAsync(cart.Username, _serializeService.Serialize(cart));
         }
         _logger.Information($"END: UpdateBasket for {cart.Username}");
 
@@ -66,7 +69,7 @@ public class BasketRepository : IBasketRepository
 
     private async Task TriggerSendEmailReminderCheckout(Cart cart)
     {
-       // var emailTemplate = _emailTemplateService.GenerateReminderCheckoutOrderEmail(cart.Username);
+        // var emailTemplate = _emailTemplateService.GenerateReminderCheckoutOrderEmail(cart.Username);
 
         //var model = new ReminderCheckoutOrderDto(cart.EmailAddress, "Reminder checkout", emailTemplate, DateTimeOffset.UtcNow.AddSeconds(30));
 
@@ -92,7 +95,7 @@ public class BasketRepository : IBasketRepository
         if (cart == null || string.IsNullOrEmpty(cart.JobId)) return;
 
         var jobId = cart.JobId;
-       // _backgroundJobHttp.DeleteReminderCheckoutOrder(jobId);
+        // _backgroundJobHttp.DeleteReminderCheckoutOrder(jobId);
         _logger.Information($"DeleteReminderCheckoutOrder: Deleted JobId {jobId}");
     }
 
@@ -102,9 +105,9 @@ public class BasketRepository : IBasketRepository
         try
         {
             _logger.Information($"BEGIN: DeleteBasketFromUsername {username}");
-            await _redisCacheService.RemoveAsync(username);
+            await _redisDb.HDeleteAsync(username);
             _logger.Information($"END: DeleteBasketFromUsername {username}");
-            
+
             return true;
         }
         catch (Exception e)
@@ -112,6 +115,6 @@ public class BasketRepository : IBasketRepository
             _logger.Error($"Error DeleteBasketFromUsername {e.Message}");
             throw;
         }
-        
+
     }
 }
