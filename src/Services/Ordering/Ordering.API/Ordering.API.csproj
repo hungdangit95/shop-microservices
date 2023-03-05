@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>3c7ec310-297f-496e-b836-540996db3e51</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>..\..\..\..</DockerfileContext>
+    </PropertyGroup>
+
+    <ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="6.0.2" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.7">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
+        <PackageReference Include="Serilog" Version="2.10.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\Common.Logging\Common.Logging.csproj" />
+      <ProjectReference Include="..\..\..\BuildingBlocks\EvenBus.Messages\EvenBus.Messages.csproj" />
+      <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructures\Infrastructures.csproj" />
+      <ProjectReference Include="..\Ordering.Application\Ordering.Application.csproj" />
+      <ProjectReference Include="..\Ordering.Infrastructure\Ordering.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
