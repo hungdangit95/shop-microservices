@@ -1,7 +1,9 @@
 using Common.Logging;
 using Contracts.Common.Interfaces;
+using Contracts.Messages;
 using HealthChecks.UI.Client;
 using Infrastructure.Common;
+using Infrastructures.Messages;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Ordering.API.Extensions;
@@ -29,6 +31,7 @@ try
     builder.Services.AddControllers();
     builder.Services.AddScoped<ISerializeService, SerializeService>();
     builder.Services.AddSingleton<Stopwatch>(new Stopwatch());
+    builder.Services.AddScoped<IMessageProducer, RabbitMQProducer>();
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();

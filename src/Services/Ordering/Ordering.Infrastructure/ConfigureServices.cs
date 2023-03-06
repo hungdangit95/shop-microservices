@@ -16,7 +16,7 @@ public static class ConfigureServices
     {
         services.AddDbContext<OrderContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString"),
+            options.UseSqlServer("Server=localhost,1435;Database=OrderDb;User=sa;Password=Passw0rd1;MultipleActiveResultSets=true;",
                    builder => builder.MigrationsAssembly(typeof(OrderContext).Assembly.FullName));
         });
 

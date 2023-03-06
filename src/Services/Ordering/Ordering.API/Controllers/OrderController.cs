@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contracts.Messages;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Common.Interfaces;
@@ -18,12 +19,14 @@ namespace Ordering.API.Controllers
         private readonly IMediator _mediator;
         private readonly IOrderRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IMessageProducer _messageProducer;
 
-        public OrderController(IMediator mediator, IOrderRepository repository, IMapper mapper)
+        public OrderController(IMediator mediator, IOrderRepository repository, IMapper mapper, IMessageProducer messageProducer)
         {
             _mediator = mediator ?? throw new ArgumentException(nameof(mediator));
             _repository = repository ?? throw new ArgumentException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentException(nameof(mapper));
+            _messageProducer = messageProducer;
         }
 
         private static class RouteNames
@@ -60,6 +63,7 @@ namespace Ordering.API.Controllers
         {
             var command = _mapper.Map<CreateOrderCommand>(model);
             var result = await _mediator.Send(command);
+            _messageProducer.SendMessage(model);
             return Ok(result);
         }
 

@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   #database section
-  #orderdb:
-  #  image: mcr.microsoft.com/mssql/server:2019-latest
+  orderdb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
 
   productdb:
     image: mysql:8.0.29
@@ -18,8 +18,8 @@ services:
   #  image: mongo
 
   #infrastructure section
-  #rabbitmq:
-  #  image: rabbitmq:3-management-alpine
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
 
   pgadmin:
     image: dpage/pgadmin4
@@ -59,7 +59,7 @@ networks:
 #vollumes section
 volumes:
   mysql_data:
-  #sqlserver_data:
+  sqlserver_data:
   postgres_data:
   portainer_data:
   #elasticsearch_data:

@@ -4,16 +4,16 @@ services:
   #database section
   
   #orderdb: sql server
-  #orderdb:
-  #  container_name: orderdb
-  #  environment:
-  #    SA_PASSWORD: "Passw0rd!"
-  #    ACCEPT_EULA: "Y"
-  #  restart: always
-  #  volumes:
-  #    - sqlserver_data:/var/lib/sqlserver/data
-  #  ports:
-  #    - "1435:1433"
+  orderdb:
+    container_name: orderdb
+    environment:
+      MSSQL_SA_PASSWORD: "Passw0rd1"
+      ACCEPT_EULA: "Y"
+    restart: always
+    volumes:
+      - sqlserver_data:/var/lib/sqlserver/data
+    ports:
+      - "1435:1433"
 
   #productdb: mysql
   productdb:
@@ -61,13 +61,13 @@ services:
 
   ##infrastructure section
   
-  #rabbitmq:
-  #  container_name: rabbitmq
-  #  restart: always
-  #  ports:
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
 
-  #    - "5672:5672"
-  #    - "15672:15672"
+      - "5672:5672"
+      - "15672:15672"
     
   pgadmin:
     container_name: pgadmin
