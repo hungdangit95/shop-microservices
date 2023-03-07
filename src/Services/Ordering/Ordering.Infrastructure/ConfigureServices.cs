@@ -16,8 +16,12 @@ public static class ConfigureServices
     {
         services.AddDbContext<OrderContext>(options =>
         {
-            options.UseSqlServer("Server=localhost,1435;Database=OrderDb;User=sa;Password=Passw0rd1;MultipleActiveResultSets=true;",
-                   builder => builder.MigrationsAssembly(typeof(OrderContext).Assembly.FullName));
+            options.UseSqlServer("Server=orderdb,1433;Database=OrderDb;User ID=sa;Password=Passw0rd1;",
+                   builder =>
+                   {
+                       builder.MigrationsAssembly(typeof(OrderContext).Assembly.FullName);
+                       builder.EnableRetryOnFailure();
+                   });
         });
 
         services.AddScoped<OrderContextSeed>();

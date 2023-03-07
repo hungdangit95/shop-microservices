@@ -75,7 +75,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.Domain", "src\Serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordering.Infrastructure", "src\Services\Ordering\Ordering.Infrastructure\Ordering.Infrastructure.csproj", "{184BC3A4-F59B-45B3-AB56-36596772EFCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subcriber", "Subcriber\Subcriber.csproj", "{51BFF57B-2762-401D-9088-B79177426FBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subcriber", "Subcriber\Subcriber.csproj", "{51BFF57B-2762-401D-9088-B79177426FBF}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B1E42A5E-388C-4747-8EFE-0E28999434AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,6 +153,10 @@ Global
 		{51BFF57B-2762-401D-9088-B79177426FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51BFF57B-2762-401D-9088-B79177426FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51BFF57B-2762-401D-9088-B79177426FBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1E42A5E-388C-4747-8EFE-0E28999434AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1E42A5E-388C-4747-8EFE-0E28999434AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1E42A5E-388C-4747-8EFE-0E28999434AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1E42A5E-388C-4747-8EFE-0E28999434AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

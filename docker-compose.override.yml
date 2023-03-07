@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 
 services:
   #database section
@@ -164,7 +164,7 @@ services:
       environment:
          - ASPNETCORE_ENVIRONMENT=Development
          - ASPNETCORE_URLS=http://+:80
-         - "ConnectionStrings:DefaultConnectionString=Server=orderdb,1433;Database=OrderDb;User=sa;Password=Passw0rd1;MultipleActiveResultSets=True"
+         - "ConnectionStrings:DefaultConnectionString=Server=localhost,1433;Database=OrderDb;User=sa;Password=Passw0rd1;MultipleActiveResultSets=True"
          - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
       depends_on:
          - orderdb
