@@ -14,7 +14,7 @@ namespace Ordering.API.Extensions
         {
             var emailSettings = configuration.GetSection(nameof(EmailSMTPSettings)).Get<EmailSMTPSettings>();
 
-            services.AddSingleton(emailSettings);
+            _ = services.AddSingleton(emailSettings);
 
             var eventBusSettings = configuration.GetSection(nameof(EventBusSettings)).Get<EventBusSettings>();
 

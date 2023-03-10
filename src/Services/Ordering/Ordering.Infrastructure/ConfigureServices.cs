@@ -1,6 +1,5 @@
 ﻿using Contracts.Common.Interfaces;
 using Infrastructure.Common;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +15,7 @@ public static class ConfigureServices
     {
         services.AddDbContext<OrderContext>(options =>
         {
-            options.UseSqlServer("Server=orderdb,1433;Database=OrderDb;User ID=sa;Password=Passw0rd1;",
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString"),
                    builder =>
                    {
                        builder.MigrationsAssembly(typeof(OrderContext).Assembly.FullName);

@@ -12,7 +12,7 @@ services:
     image: postgres:alpine3.16
 
   basketdb:
-    image: redis:alpine
+    image: redis:alpine 
 
   #inventorydb:
   #  image: mongo

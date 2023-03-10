@@ -4,6 +4,8 @@ services:
   #database section
   orderdb:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    networks:
+      - shop_microservices
 
   productdb:
     image: mysql:8.0.29
@@ -57,9 +59,9 @@ services:
     build:
       context: .
       dockerfile: src/Services/Ordering/Ordering.API/Dockerfile
-#network section
-networks:
-  shop_microservices:
+    networks:
+      - shop_microservices
+
 
 #vollumes section
 volumes:
@@ -71,3 +73,9 @@ volumes:
   #jaeger_data:
   #mongo_data:
   pgadmin_data:
+
+#network section
+networks:
+  shop_microservices:
+    driver: bridge
+    external: true

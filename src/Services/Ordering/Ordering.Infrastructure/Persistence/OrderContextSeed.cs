@@ -25,7 +25,7 @@ namespace Ordering.Infrastructure.Persistence
             {
                 if (_context.Database.IsSqlServer())
                 {
-                    await TrySeedAsync();
+                   // await TrySeedAsync();
                     await _context.Database.MigrateAsync();
                 }    
             }

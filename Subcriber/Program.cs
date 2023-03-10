@@ -18,4 +18,5 @@ consumer.Received += (_, eventAgrs) =>
 
 };
 
-channel.BasicConsume("orders", false,consumer);
+channel.BasicConsume("orders", true,consumer);
+Console.ReadKey();

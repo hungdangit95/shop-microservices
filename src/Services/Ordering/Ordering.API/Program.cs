@@ -69,15 +69,15 @@ try
 
     app.UseAuthorization();
 
-    //app.UseEndpoints(endpoints =>
-    //{
-    //    //endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-    //    //{
-    //    //    Predicate = _ => true,
-    //    //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    //    //});
-    //    endpoints.MapDefaultControllerRoute();
-    //});
+    app.UseEndpoints(endpoints =>
+    {
+        //endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+        //{
+        //    Predicate = _ => true,
+        //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        //});
+        endpoints.MapDefaultControllerRoute();
+    });
 
     app.Run();
 }
