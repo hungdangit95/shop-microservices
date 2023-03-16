@@ -5,6 +5,9 @@ using Basket.API.Repositories.Interfaces;
 using Shared.Configurations;
 using Infrastructure.Extensions;
 using StackExchange.Redis;
+using MassTransit;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using EventBus.Messages.IntegrationEvents.Interfaces;
 
 namespace Basket.API.Extensions;
 
@@ -45,10 +48,10 @@ public static class ServiceExtension
         }
 
         //Redis Configuration
-        //services.AddStackExchangeRedisCache(options =>
-        //{
-        //    options.Configuration = settings.ConnectionStrings;
-        //});
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = settings.ConnectionStrings;
+        });
 
         services.AddSingleton<IConnectionMultiplexer>(sp =>
                 ConnectionMultiplexer.Connect(new ConfigurationOptions
@@ -58,26 +61,26 @@ public static class ServiceExtension
                 }));
     }
 
-    //public static void ConfigureMassTransit(this IServiceCollection services)
-    //{
-    //    var settings = services.GetOptions<EventBusSettings>("EventBusSettings");
-    //    if (string.IsNullOrEmpty(settings.HostAddress))
-    //    {
-    //        throw new ArgumentNullException("EventBusSettings is not configured.");
-    //    }
+    public static void ConfigureMassTransit(this IServiceCollection services)
+    {
+        var settings = services.GetOptions<EventBusSettings>("EventBusSettings");
+        if (string.IsNullOrEmpty(settings.HostAddress))
+        {
+            throw new ArgumentNullException("EventBusSettings is not configured.");
+        }
 
-    //    var mqConnection = new Uri(settings.HostAddress);
-    //    services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
-    //    services.AddMassTransit(config =>
-    //    {
-    //        config.UsingRabbitMq((ctx, cfg) =>
-    //        {
-    //            cfg.Host(mqConnection);
-    //        });
+        var mqConnection = new Uri(settings.HostAddress);
+        services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+        services.AddMassTransit(config =>
+        {
+            config.UsingRabbitMq((ctx, cfg) =>
+            {
+                cfg.Host(mqConnection);
+            });
 
-    //        config.AddRequestClient<IBasketCheckoutEvent>();
-    //    });
-    //}
+            config.AddRequestClient<IBasketCheckoutEvent>();
+        });
+    }
 
     //public static void ConfigureHttpClientService(this IServiceCollection services)
     //{

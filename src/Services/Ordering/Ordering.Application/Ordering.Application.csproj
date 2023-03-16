@@ -25,6 +25,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\BuildingBlocks\Common.Logging\Common.Logging.csproj" />
       <ProjectReference Include="..\..\..\BuildingBlocks\Contracts\Contracts.csproj" />
+      <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EvenBus.Messages\EvenBus.Messages.csproj" />
       <ProjectReference Include="..\..\..\BuildingBlocks\Infrastructures\Infrastructures.csproj" />
       <ProjectReference Include="..\..\..\BuildingBlocks\Shared\Shared.csproj" />
       <ProjectReference Include="..\Ordering.Domain\Ordering.Domain.csproj" />

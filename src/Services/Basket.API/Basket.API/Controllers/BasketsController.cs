@@ -3,14 +3,14 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Basket.API.Entities;
 using Basket.API.Repositories.Interfaces;
-using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.Caching.Distributed;
-//using MassTransit;
+using MassTransit;
 using AutoMapper;
 //using EventBus.Messages.IntegrationEvents.Events;
 //using Basket.API.GrpcServices;
 //using Basket.API.Services.Interfaces;
 using Shared.Dtos.Basket;
+using EventBus.Messages.IntegrationEvents.Events;
 
 namespace Basket.API.Controllers;
 
@@ -19,23 +19,15 @@ namespace Basket.API.Controllers;
 public class BasketsController : Controller
 {
     private readonly IBasketRepository _repository;
-    //private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IPublishEndpoint _publishEndpoint;
     private readonly IMapper _mapper;
     // private readonly StockItemGrpcService _stockItemGrpcService;
 
-    //public BasketsController(IBasketRepository repository, IPublishEndpoint publishEndpoint, IMapper mapper, StockItemGrpcService stockItemGrpcService)
-    //{
-    //    _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-    //    _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
-    //    _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    //    _stockItemGrpcService = stockItemGrpcService ?? throw new ArgumentNullException(nameof(stockItemGrpcService));
-    //}
-    public BasketsController(IBasketRepository repository, IMapper mapper)
+    public BasketsController(IBasketRepository repository, IPublishEndpoint publishEndpoint, IMapper mapper)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-       // _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+        _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-       // _stockItemGrpcService = stockItemGrpcService ?? throw new ArgumentNullException(nameof(stockItemGrpcService));
     }
 
     [HttpGet("{username}", Name = "GetBasket")]
@@ -43,7 +35,7 @@ public class BasketsController : Controller
     public async Task<ActionResult<CartDto>> GetBasketByUsername([Required] string username)
     {
         var cart = await _repository.GetBasketByUsername(username);
-        var result = cart == null  ? new CartDto(username) : _mapper.Map<CartDto>((Cart)cart);
+        var result = cart == null ? new CartDto(username) : _mapper.Map<CartDto>((Cart)cart);
         return Ok(result);
     }
 
@@ -53,8 +45,8 @@ public class BasketsController : Controller
     {
         //foreach(var item in model.Items)
         //{
-            //var stock = await _stockItemGrpcService.GetStock(item.ItemNo);
-           // item.SetAvailableQuantity(stock.Quantity);
+        //var stock = await _stockItemGrpcService.GetStock(item.ItemNo);
+        // item.SetAvailableQuantity(stock.Quantity);
         //}    
 
         var options = new DistributedCacheEntryOptions()
@@ -77,23 +69,23 @@ public class BasketsController : Controller
         return Ok(result);
     }
 
-    //[Route("[action]")]
-    //[HttpPost]
-    //[ProducesResponseType((int)HttpStatusCode.Accepted)]
-    //[ProducesResponseType((int)HttpStatusCode.NotFound)]
-    //public async Task<IActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
-    //{
-    //    var basket = await _repository.GetBasketByUsername(basketCheckout.Username);
+    [Route("[action]")]
+    [HttpPost]
+    [ProducesResponseType((int)HttpStatusCode.Accepted)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
+    {
+        var basket = await _repository.GetBasketByUsername(basketCheckout.Username);
 
-    //    if (basket == null || !basket.Items.Any()) return NotFound();
+        if (basket == null || !basket.Items.Any()) return NotFound();
 
-    //    var eventMessage = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
+        var eventMessage = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
 
-    //    eventMessage.TotalPrice = basketCheckout.TotalPrice;
-    //    await _publishEndpoint.Publish(eventMessage);
+        eventMessage.TotalPrice = basketCheckout.TotalPrice;
+        await _publishEndpoint.Publish(eventMessage);
 
-    //    await _repository.DeleteBasketFromUsername(basketCheckout.Username);
+        await _repository.DeleteBasketFromUsername(basketCheckout.Username);
 
-    //    return Accepted();
-    //}
+        return Accepted();
+    }
 }

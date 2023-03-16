@@ -38,10 +38,10 @@ namespace Ordering.API.Extensions
                 config.UsingRabbitMq((ctx, cfg) =>
                 {
                     cfg.Host(mqConnection);
-                    //cfg.ReceiveEndpoint("basket-checkout-queue", c =>
-                    //{
-                    //    c.ConfigureConsumer<BasketCheckoutEventHandler>(ctx);
-                    //});
+                    cfg.ReceiveEndpoint("basket-checkout-queue", c =>
+                    {
+                        c.ConfigureConsumer<BasketCheckoutEventHandler>(ctx);
+                    });
                     cfg.ConfigureEndpoints(ctx);
                 });
             });

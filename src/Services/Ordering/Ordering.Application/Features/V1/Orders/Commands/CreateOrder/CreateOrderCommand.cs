@@ -5,6 +5,7 @@ using OrderDto = Ordering.Application.Common.Models.OrderDto;
 using Ordering.Domain.Entities;
 using Shared.Dtos.Order;
 using Shared.SeedWord;
+using EventBus.Messages.IntegrationEvents.Events;
 
 namespace Ordering.Application.Features.V1.Orders
 {
