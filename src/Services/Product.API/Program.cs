@@ -22,7 +22,7 @@ try
     builder.Services.AddInfrastructure(builder.Configuration);
     Log.Information($"Build success Infrastructure");
 
-    // builder.Services.AddConfigurationSettings(builder.Configuration);
+    builder.Services.AddConfigurationSettings(builder.Configuration);
     Log.Information($"Build success ConfigurationSettings");
 
     Log.Information($"End build Service in Program file");

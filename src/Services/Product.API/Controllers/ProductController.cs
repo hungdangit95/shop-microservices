@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Product.API.Entities;
 using Product.API.Repositories.Interfaces;
@@ -23,6 +24,7 @@ public class ProductController : ControllerBase
 
     #region CRUD
     [HttpGet]
+    [Authorize]
    // [ClaimsRequirementAttribute(FunctionCode.PRODUCT, CommandCode.VIEW)]
     public async Task<IActionResult> GetList()
     {
@@ -44,6 +46,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
    // [ClaimsRequirementAttribute(FunctionCode.PRODUCT, CommandCode.CREATE)]
     public async Task<IActionResult> Create([FromBody] CreateProductDto productDto)
     {
@@ -56,7 +59,8 @@ public class ProductController : ControllerBase
     }
 
     [HttpPut("{id}")]
-   // [ClaimsRequirementAttribute(FunctionCode.PRODUCT, CommandCode.UPDATE)]
+    [Authorize]
+    // [ClaimsRequirementAttribute(FunctionCode.PRODUCT, CommandCode.UPDATE)]
     public async Task<IActionResult> Update([Required] int id, [FromBody] UpdateProductDto productDto)
     {
         var product = await _repository.GetProduct(id);
@@ -72,7 +76,8 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-   // [ClaimsRequirementAttribute(FunctionCode.PRODUCT, CommandCode.DELETE)]
+    [Authorize]
+    // [ClaimsRequirementAttribute(FunctionCode.PRODUCT, CommandCode.DELETE)]
     public async Task<IActionResult> Delete([Required] int id)
     {
         var product = await _repository.GetProduct(id);

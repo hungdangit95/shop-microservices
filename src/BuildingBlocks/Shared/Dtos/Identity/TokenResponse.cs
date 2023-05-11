@@ -4,10 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Configurations
+namespace Shared.Dtos.Identity
 {
-    public class JwtSettings
-    {
-        public string? Key { get; set; }
-    }
+    public record TokenResponse(string token);
 }

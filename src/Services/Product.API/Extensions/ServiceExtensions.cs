@@ -1,30 +1,61 @@
 ﻿using Contracts.Common.Interfaces;
+using Contracts.Identity;
 using Infrastructure.Common;
+using Infrastructures.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MySql.Data.MySqlClient;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Product.API.Persistence;
 using Product.API.Repositories;
 using Product.API.Repositories.Interfaces;
+using Serilog;
+using Shared.Configurations;
+using System.Text;
+using System.Text.Json;
 
 namespace Product.API.Extensions
 {
     public static class ServiceExtensions
     {
-        //public static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
-        //{
-        //    var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
-        //    services.AddSingleton(jwtSettings);
+        public static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
+            services.AddSingleton(jwtSettings);
 
-        //    var databaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
-        //    services.AddSingleton(databaseSettings);
+            var databaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>();
+            services.AddSingleton(databaseSettings);
 
-        //    var apiConfigSettings = configuration.GetSection(nameof(ApiConfigurationSettings)).Get<ApiConfigurationSettings>();
-        //    Log.Information($"ApiConfigurationSettings data: {JsonSerializer.Serialize(apiConfigSettings)}");
-        //    services.AddSingleton(apiConfigSettings);
+            var apiConfigSettings = configuration.GetSection(nameof(ApiConfigurationSettings)).Get<ApiConfigurationSettings>();
+            Log.Information($"ApiConfigurationSettings data: {JsonSerializer.Serialize(apiConfigSettings)}");
+            services.AddSingleton(apiConfigSettings);
 
-        //    return services;
-        //}
+
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
+                ClockSkew = TimeSpan.Zero,
+                RequireExpirationTime = false
+            };
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.SaveToken = true;
+                x.RequireHttpsMetadata = false;
+                x.TokenValidationParameters = tokenValidationParameters;
+            });
+            return services;
+        }
 
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
@@ -32,7 +63,7 @@ namespace Product.API.Extensions
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            //services.ConfigureSwagger();
+            services.ConfigureSwagger();
 
             services.ConfigureProductDbContext(configuration);
             services.AddInfrastructureService();
@@ -61,10 +92,10 @@ namespace Product.API.Extensions
 
         private static IServiceCollection AddInfrastructureService(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBase<,,>));
-            services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-            services.AddScoped<IProductRepository, ProductRepository>();
-
+            services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBase<,,>))
+                .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
+                .AddScoped<IProductRepository, ProductRepository>()
+                .AddTransient<ITokenService, TokenService>();
             return services;
 
         }
@@ -128,5 +159,36 @@ namespace Product.API.Extensions
         //        });
         //    });
         //}
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(opt =>
+             {
+                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                 {
+                     In = ParameterLocation.Header,
+                     Description = "Please enter token",
+                     Name = "Authorization",
+                     Type = SecuritySchemeType.Http,
+                     BearerFormat = "JWT",
+                     Scheme = "bearer"
+                 });
+                 opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                 {
+                     {
+                         new OpenApiSecurityScheme
+                         {
+                             Reference = new OpenApiReference
+                             {
+                                 Type = ReferenceType.SecurityScheme,
+                                 Id = "Bearer"
+                             }
+                         },
+                         new string[] { }
+                     }
+                 });
+             });
+        }
     }
 }

@@ -9,6 +9,8 @@ services:
 
   productdb:
     image: mysql:8.0.29
+    networks:
+      - shop_microservices
 
   customerdb:
     image: postgres:alpine3.16
@@ -41,6 +43,8 @@ services:
     build:
       context: .
       dockerfile: src/Services/Product.API/Dockerfile
+    networks:
+      - shop_microservices
 
   customer.api:
     image: ${DOCKER_REGISTRY-}customer-api:${PLATFORM:-linux}-${TAG:-latest}

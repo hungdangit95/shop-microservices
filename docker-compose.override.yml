@@ -129,6 +129,8 @@ services:
       ports:
          - "6002:80"
       restart: always
+      links:
+      - productdb
 
   customer.api:
       container_name: customer.api

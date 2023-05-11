@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+﻿using Infrastructures.Middlewares;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace Product.API.Extensions
 {
@@ -13,22 +14,22 @@ namespace Product.API.Extensions
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product API");
                 c.DisplayRequestDuration();
             });
-          //  app.UseMiddleware<ErrorWrappingMiddleware>();
-           // app.UseAuthentication();
+            app.UseMiddleware<ErrorWrappingMiddleware>();
+            app.UseAuthentication();
 
             app.UseRouting();
             //app.UseHttpsRedirection();
 
-            // app.UseAuthorization();
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-            //    {
-            //        Predicate = _ => true,
-            //       // ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            //    });
-            //    endpoints.MapDefaultControllerRoute();
-            //});
+             app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                //endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+                //{
+                //    Predicate = _ => true,
+                //    // ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                //});
+                endpoints.MapDefaultControllerRoute();
+            });
         }
     }
 }

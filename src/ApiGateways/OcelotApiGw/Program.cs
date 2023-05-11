@@ -1,4 +1,6 @@
 using Common.Logging;
+using Infrastructures.Middlewares;
+using Ocelot.Middleware;
 using OcelotApiGw.Extensions;
 using Serilog;
 Log.Logger = new LoggerConfiguration()
@@ -24,9 +26,9 @@ try
     var app = builder.Build();
     app.UseCors("CorsPolicy");
    // app.UseMiddleware<ErrorWrappingMiddleware>();
-    // app.UseAuthentication();
+    //app.UseAuthentication();
     app.UseRouting();
-    ///app.UseAuthorization();
+   // app.UseAuthorization();
     app.UseEndpoints(endpoints =>
     {
         endpoints.MapGet("/", context =>
@@ -44,11 +46,17 @@ try
     }
 
     app.UseHttpsRedirection();
-
-    app.UseAuthorization();
+    
+    //    .AddJwtBearer("TestKey", x =>
+    //    {
+    //        x.Authority = "test";
+    //        x.Audience = "test";
+    //    });
+   
 
     app.MapControllers();
 
+    await app.UseOcelot();
     app.Run();
 }
 catch (Exception ex)
